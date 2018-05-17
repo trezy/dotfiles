@@ -1,0 +1,6 @@
+.DS_Store
+symlinkable/.irssi/away.log
+symlinkable/.irssi/config
+symlinkable/.irssi/config.autosave
+symlinkable/.irssi/*.pem
+
