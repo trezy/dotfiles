@@ -9,6 +9,11 @@ function realpath() {
 }
 
 function doIt() {
+  # Create required directories
+  for i in ('~/environments'); do
+    mkdir -p $i
+  done
+
   # Create symlinks from ~ to each file in /symlinkable
   for i in $(ls -A ./symlinkable); do
     SYMLINK_PATH=$(realpath "./symlinkable/$i")
