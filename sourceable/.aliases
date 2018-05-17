@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # My aliases
-alias ls="ls -lhAG "
+alias lsa="ls -lhAG "
 alias cp="cp -r "
 alias rm="rm -rf "
 alias vis="/usr/local/bin/vis"

@@ -10,8 +10,8 @@ function realpath() {
 
 function doIt() {
   # Create symlinks from ~ to each file in /symlinkable
-  for i in $(ls -A ../symlinkable); do
-    SYMLINK_PATH=$(realpath "../symlinkable/$i")
+  for i in $(ls -A ./symlinkable); do
+    SYMLINK_PATH=$(realpath "./symlinkable/$i")
 
     if [ ! -e ~/$i ]; then
       ln -s $SYMLINK_PATH ~
@@ -35,13 +35,27 @@ function doIt() {
   fi
 
   # Source all the files in /sourceable from .bash_profile
-  for i in $(ls -A ../sourceable); do
-    SOURCE_PATH=$(realpath "../sourceable/$i")
+  for i in $(ls -pA ./sourceable | grep -v /); do
+    SOURCE_PATH=$(realpath "./sourceable/$i")
     SOURCE_LINE="source $SOURCE_PATH"
 
     if [ ! $(grep -q "$SOURCE_LINE" ~/.bash_profile) ]; then
       echo "$SOURCE_LINE" >> ~/.bash_profile
     fi
+  done
+
+  # Source all the files in /sourceable/once
+  # for i in $(ls -pA ./sourceable/once | grep -v /); do
+  #   SOURCE_PATH=$(realpath "./sourceable/once/$i")
+
+  #   source $SOURCE_PATH
+  # done
+
+  # Run all of the setup scripts
+  for i in $(ls -pA ./scripts | grep -v /); do
+    SOURCE_PATH=$(realpath "./scripts/$i")
+
+    $SOURCE_PATH
   done
 
   source ~/.bash_profile;
