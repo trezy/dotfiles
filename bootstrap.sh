@@ -4,15 +4,16 @@
 
 
 
+
 ################################################################################
 # Default Options
 ################################################################################
 
 FORCE=false
-NO_SCRIPTS=true
-NO_SOURCEABLES=true
-NO_SYMLINKABLES=true
+SCRIPTS=true
 SHOW_HELP=false
+SOURCEABLES=true
+SYMLINKABLES=true
 
 
 
@@ -32,19 +33,19 @@ for i in "$@"; do
       shift
       ;;
     --no-scripts)
-      SCRIPTS=true
+      SCRIPTS=false
       shift
       ;;
     --no-sourceables)
-      SOURCEABLES=true
+      SOURCEABLES=false
       shift
       ;;
     --no-symlinkables)
-      SYMLINKABLES=true
+      SYMLINKABLES=false
       shift
       ;;
     *)
-      echo "Unrecognized arg: $i"
+      echo "Unrecognized option: $i"
       shift
       ;;
   esac
