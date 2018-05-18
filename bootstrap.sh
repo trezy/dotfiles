@@ -1,16 +1,62 @@
 #!/usr/bin/env bash
 
-cd "$(dirname "${BASH_SOURCE}")";
-
-git pull origin master;
-
-function realpath() {
-  echo $(cd "$(dirname "$1")" && pwd)/$(basename "$1");
-}
 
 
 
 
+################################################################################
+# Default Options
+################################################################################
+
+FORCE=false
+NO_SCRIPTS=true
+NO_SOURCEABLES=true
+NO_SYMLINKABLES=true
+SHOW_HELP=false
+
+
+
+
+
+################################################################################
+# Parse command line arguments
+################################################################################
+
+for i in "$@"; do
+  case $i in
+    -h|--help|-\?)
+      SHOW_HELP=true
+      ;;
+    -f|--force)
+      FORCE=true
+      shift
+      ;;
+    --no-scripts)
+      SCRIPTS=true
+      shift
+      ;;
+    --no-sourceables)
+      SOURCEABLES=true
+      shift
+      ;;
+    --no-symlinkables)
+      SYMLINKABLES=true
+      shift
+      ;;
+    *)
+      echo "Unrecognized arg: $i"
+      shift
+      ;;
+  esac
+done
+
+
+
+
+
+################################################################################
+# Create all of our functions
+################################################################################
 
 function addSourceablesToBashrc() {
   # Source all the files in /sourceable from .bash_profile
@@ -28,22 +74,20 @@ function addSourceablesToBashrc() {
 
 
 
-function createBashrc() {
-  # Create a .bash_profile if we don't already have one
-  if [ ! -e ~/.bash_profile ]; then
-    touch ~/.bash_profile
-    SEPARATOR=""
+function createBashProfile() {
+  # Create a .bash_profile
+  touch ~/.bash_profile
+  SEPARATOR=""
 
-    i=0
-    while [ $i -lt 80 ]; do
-      SEPARATOR=$SEPARATOR"#"
-      let i=i+1
-    done
+  i=0
+  while [ $i -lt 80 ]; do
+    SEPARATOR=$SEPARATOR"#"
+    let i=i+1
+  done
 
-    echo "$SEPARATOR" >> ~/.bash_profile
-    echo "# Dotfiles" >> ~/.bash_profile
-    echo "$SEPARATOR" >> ~/.bash_profile
-  fi
+  echo "$SEPARATOR" >> ~/.bash_profile
+  echo "# Dotfiles" >> ~/.bash_profile
+  echo "$SEPARATOR" >> ~/.bash_profile
 }
 
 
@@ -89,6 +133,14 @@ function handleSingleRunSourceables() {
 
 
 
+function realpath() {
+  echo $(cd "$(dirname "$1")" && pwd)/$(basename "$1");
+}
+
+
+
+
+
 function runSetupScripts() {
   # Run all of the setup scripts
   for i in $(ls -pA ./scripts | grep -v /); do
@@ -102,33 +154,86 @@ function runSetupScripts() {
 
 
 
-function doIt() {
-  createFolders;
+function showHelp() {
+  echo "
+$(basename "$0") -- Bootstrap to set up all of the dotfiles
 
-  createSymlinks;
-
-  createBashrc;
-
-  addSourceablesToBashrc;
-
-  handleSingleRunSourceables;
-
-  runSetupScripts;
-
-  source ~/.bash_profile;
+where:
+  -h, --help          show this help text
+  -f, --force         don't show warning about overwriting files in the home directory
+  --no-scripts        don't run scripts
+  --no-sourceables    don't add sourceables to .bash_profile
+  --no-symlinkables   don't symlink anything in the symlink folder"
+  
+  exit 0;
 }
 
 
 
 
+################################################################################
+# Do all the things
+################################################################################
 
-if [ "$1" == "--force" -o "$1" == "-f" ]; then
-  doIt;
-else
+if [ $SHOW_HELP = true ]; then
+  echo 'Showing help';
+  showHelp;
+fi
+
+cd "$(dirname "${BASH_SOURCE}")";
+
+echo -n "Updating script... "
+git pull origin master &> /dev/null;
+echo "Done."
+
+if [ $FORCE = false ]; then
   read -p "This may overwrite existing files in your home directory. Are you sure? (y/n) " -n 1;
   echo "";
+
   if [[ $REPLY =~ ^[Yy]$ ]]; then
-    doIt;
+    createFolders;
+  
+    if [ $SYMLINKABLES = true ]; then
+      createSymlinks;
+    fi
+
+    if [ ! -e ~/.bash_profile ]; then
+      createBashProfile;
+    fi
+  
+    if [ $SOURCEABLES = true ]; then
+      addSourceablesToBashrc;
+      handleSingleRunSourceables;
+    fi
+  
+    if [ $SCRIPTS = true ]; then
+      runSetupScripts;
+    fi
+  
+    source ~/.bash_profile;
   fi;
 fi;
-unset doIt;
+
+
+
+
+################################################################################
+# Unset all of our functions so that we don't accidentally break anything else
+################################################################################
+
+unset addSourceablesToBashrc;
+unset createBashProfile;
+unset createFolders;
+unset createSymlinks;
+unset handleSingleRunSourceables;
+unset parseArguments;
+unset realpath;
+unset runSetupScripts;
+unset showHelp;
+
+
+
+
+
+exit 0;
+
