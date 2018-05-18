@@ -65,7 +65,7 @@ function addSourceablesToBashrc() {
     SOURCE_PATH=$(realpath "./sourceable/$i")
     SOURCE_LINE="source $SOURCE_PATH"
 
-    if [ ! $(grep -q "$SOURCE_LINE" ~/.bash_profile) ]; then
+    if [[ ! $(grep -q "$SOURCE_LINE" ~/.bash_profile) ]]; then
       echo "$SOURCE_LINE" >> ~/.bash_profile
     fi
   done
@@ -81,13 +81,13 @@ function createBashProfile() {
   SEPARATOR=""
 
   i=0
-  while [ $i -lt 80 ]; do
+  while [[ $i -lt 80 ]]; do
     SEPARATOR=$SEPARATOR"#"
     let i=i+1
   done
 
   echo "$SEPARATOR" >> ~/.bash_profile
-  echo "# Dotfiles" >> ~/.bash_profile
+  echo "# Dotfiles!" >> ~/.bash_profile
   echo "$SEPARATOR" >> ~/.bash_profile
 }
 
@@ -111,22 +111,9 @@ function createSymlinks() {
   for i in $(ls -A ./symlinkable); do
     SYMLINK_PATH=$(realpath "./symlinkable/$i")
 
-    if [ ! -e ~/$i ]; then
+    if [[ ! -e ~/$i ]]; then
       ln -s $SYMLINK_PATH ~
     fi
-  done
-}
-
-
-
-
-
-function handleSingleRunSourceables() {
-  # Source all the files in /sourceable/once
-  for i in $(ls -pA ./sourceable/once | grep -v /); do
-    SOURCE_PATH=$(realpath "./sourceable/once/$i")
-
-    source $SOURCE_PATH
   done
 }
 
@@ -143,11 +130,28 @@ function realpath() {
 
 
 function runSetupScripts() {
-  # Run all of the setup scripts
+  RECORD_PATH=~/.dotfiles
+
+  # Create the dotfile record if we haven't already
+  touch $RECORD_PATH
+
+  # Loop through all the files in /scripts
   for i in $(ls -pA ./scripts | grep -v /); do
     SOURCE_PATH=$(realpath "./scripts/$i")
+    LAST_MODIFIED=$(date -r $SOURCE_PATH)
+    PREVIOUS_RECORD=$(grep -F "$i" $RECORD_PATH)
 
-    $SOURCE_PATH
+    PREVIOUS_LAST_MODIFIED=${PREVIOUS_RECORD#$i }
+
+    if [[ $PREVIOUS_LAST_MODIFIED != $LAST_MODIFIED ]]; then
+      if [[ $PREVIOUS_RECORD != "" ]]; then
+        sed -i "s/$PREVIOUS_RECORD/$i $LAST_MODIFIED/" $RECORD_PATH
+      else
+        echo "$i $LAST_MODIFIED" >> $RECORD_PATH
+      fi
+
+      # source $SOURCE_PATH
+    fi
   done
 }
 
@@ -176,7 +180,7 @@ where:
 # Do all the things
 ################################################################################
 
-if [ $SHOW_HELP = true ]; then
+if [[ $SHOW_HELP = true ]]; then
   echo 'Showing help';
   showHelp;
 fi
@@ -187,33 +191,34 @@ echo -n "Updating script... "
 git pull origin master &> /dev/null;
 echo "Done."
 
-if [ $FORCE = false ]; then
+if [[ $FORCE = false ]]; then
   read -p "This may overwrite existing files in your home directory. Are you sure? (y/n) " -n 1;
   echo "";
 
-  if [[ $REPLY =~ ^[Yy]$ ]]; then
-    createFolders;
-  
-    if [ $SYMLINKABLES = true ]; then
-      createSymlinks;
-    fi
-
-    if [ ! -e ~/.bash_profile ]; then
-      createBashProfile;
-    fi
-  
-    if [ $SOURCEABLES = true ]; then
-      addSourceablesToBashrc;
-      handleSingleRunSourceables;
-    fi
-  
-    if [ $SCRIPTS = true ]; then
-      runSetupScripts;
-    fi
-  
-    source ~/.bash_profile;
+  if [[ $REPLY =~ ^(?![Yy])$ ]]; then
+    exit 0
   fi;
 fi;
+
+createFolders;
+
+if [[ $SYMLINKABLES = true ]]; then
+  createSymlinks;
+fi
+
+if [[ ! -e ~/.bash_profile ]]; then
+  createBashProfile;
+fi
+
+if [[ $SOURCEABLES = true ]]; then
+  addSourceablesToBashrc;
+fi
+
+if [[ $SCRIPTS = true ]]; then
+  runSetupScripts;
+fi
+
+source ~/.bash_profile;
 
 
 
@@ -226,7 +231,6 @@ unset addSourceablesToBashrc;
 unset createBashProfile;
 unset createFolders;
 unset createSymlinks;
-unset handleSingleRunSourceables;
 unset parseArguments;
 unset realpath;
 unset runSetupScripts;
