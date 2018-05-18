@@ -1,5 +1,7 @@
 " Get the defaults that most users want.
-source $VIMRUNTIME/defaults.vim
+if !empty(glob('$VIMRUNTIME/defaults.vim'))
+  source $VIMRUNTIME/defaults.vim
+endif
 
 " Change swap directory
 let mySwapDir = expand('$HOME/.vim/swap')
