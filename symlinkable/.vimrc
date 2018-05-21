@@ -119,6 +119,21 @@ augroup vimStartup
     \ endif
 augroup END
 
+" Override :grep to use Ag Silver Searcher
+if executable('ag')
+  " Use ag over grep
+  set grepprg=ag\ --nogroup\ --nocolor
+
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+
+  " ag is fast enough that CtrlP doesn't need to cache
+  let g:ctrlp_use_caching = 0
+endif
+
+" bind \ (backward slash) to grep shortcut
+command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+
 
 
 
@@ -128,8 +143,16 @@ augroup END
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let mapleader = "\<Space>"
 
+nnoremap \ :Ag<SPACE>
+
+" Open NERDTree
 map <leader>f :NERDTree<cr>
+" Switch to next window
 map <leader>n :bn<cr>
+" Switch to previous window
 map <leader>p :bp<cr>
+" Delete buffer
 map <leader>d :bd<cr>
+" Close the quickfix window
+map <leader>q :ccl<cr>
 
