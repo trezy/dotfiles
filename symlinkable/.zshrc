@@ -2,6 +2,14 @@
 TERM="screen-256color"
 DEFAULT_USER="trezy"
 
+
+
+
+
+###############################################################################
+# $PATH Additions
+###############################################################################
+
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
 
@@ -16,17 +24,17 @@ fi
 # Add Yarn's global bin
 export PATH="$(yarn global bin):$PATH"
 
+
+
+
+
+###############################################################################
+# POWERLEVEL9K Configuration
+###############################################################################
+
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 POWERLEVEL9K_MODE="awesome-fontconfig"
-# POWERLEVEL9K_MODE="default"
-ZSH_THEME="powerlevel9k/powerlevel9k"
-
-# Tell zsh-nvm to auto use the node version listed in .nvmrc files
-export NVM_AUTO_USE=true
-
-# Which plugins would you like to load?
-plugins=(git zsh-autosuggestions zsh-nvm almostontop)
 
 # Extra config for PL9K
 POWERLEVEL9K_DIR_HOME_FOREGROUND="white"
@@ -49,20 +57,44 @@ POWERLEVEL9K_STATUS_VERBOSE=false
 
 
 
+###############################################################################
+# ZSH Plugins
+###############################################################################
+
+# Tell zsh-nvm to auto use the node version listed in .nvmrc files
+export NVM_AUTO_USE=true
+
+# Setup Antigen
+source ~/antigen.zsh
+
+# Load the oh-my-zsh library.
+antigen use oh-my-zsh
+
+# Load plugins
+antigen bundle git
+antigen bundle lukechilds/zsh-nvm
+antigen bundle zsh-users/zsh-autosuggestions
+antigen bundle Valiev/almostontop
+
+# Load the theme.
+antigen theme bhilburn/powerlevel9k powerlevel9k
+
+# Tell Antigen that you're done.
+antigen apply
+
+# Which plugins would you like to load?
+# plugins=(git zsh-autosuggestions zsh-nvm almostontop)
+
+
+
+
+
+
 source ~/.bash_profile
 source $ZSH/oh-my-zsh.sh
 source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source ~/.fonts/*.sh
+source ~/.fonts/build/*.sh
 
 # added by travis gem
 [ -f /Users/trezy/.travis/travis.sh ] && source /Users/trezy/.travis/travis.sh
-
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PATH="$PATH:$HOME/.rvm/bin"
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
-
-# Add Exercism tab completion
-if [ -f ~/.config/exercism/exercism_completion.zsh ]; then
-  . ~/.config/exercism/exercism_completion.zsh
-fi
 
