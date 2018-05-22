@@ -59,36 +59,16 @@ done
 # Create all of our functions
 ################################################################################
 
-function addSourceablesToBashrc() {
-  # Source all the files in /sourceable from .bash_profile
+function addSourceablesToZshrc() {
+  # Source all the files in /sourceable from .zshrc
   for i in $(ls -pA ./sourceable | grep -v /); do
     SOURCE_PATH=$(realpath "./sourceable/$i")
     SOURCE_LINE="source $SOURCE_PATH"
 
-    if [[ ! $(grep -q "$SOURCE_LINE" ~/.bash_profile) ]]; then
-      echo "$SOURCE_LINE" >> ~/.bash_profile
+    if [[ ! $(grep -q "$SOURCE_LINE" ~/.zshrc) ]]; then
+      echo "$SOURCE_LINE" >> ~/.zshrc
     fi
   done
-}
-
-
-
-
-
-function createBashProfile() {
-  # Create a .bash_profile
-  touch ~/.bash_profile
-  SEPARATOR=""
-
-  i=0
-  while [[ $i -lt 80 ]]; do
-    SEPARATOR=$SEPARATOR"#"
-    let i=i+1
-  done
-
-  echo "$SEPARATOR" >> ~/.bash_profile
-  echo "# Dotfiles!" >> ~/.bash_profile
-  echo "$SEPARATOR" >> ~/.bash_profile
 }
 
 
@@ -167,7 +147,7 @@ where:
   -h, --help          show this help text
   -f, --force         don't show warning about overwriting files in the home directory
   --no-scripts        don't run scripts
-  --no-sourceables    don't add sourceables to .bash_profile
+  --no-sourceables    don't add sourceables to .zshrc
   --no-symlinkables   don't symlink anything in the symlink folder"
   
   exit 0;
@@ -206,19 +186,14 @@ if [[ $SYMLINKABLES = true ]]; then
   createSymlinks;
 fi
 
-if [[ ! -e ~/.bash_profile ]]; then
-  createBashProfile;
-fi
-
 if [[ $SOURCEABLES = true ]]; then
-  addSourceablesToBashrc;
+  addSourceablesToZshrc;
 fi
 
 if [[ $SCRIPTS = true ]]; then
   runSetupScripts;
 fi
 
-source ~/.bash_profile;
 
 
 
@@ -227,8 +202,7 @@ source ~/.bash_profile;
 # Unset all of our functions so that we don't accidentally break anything else
 ################################################################################
 
-unset addSourceablesToBashrc;
-unset createBashProfile;
+unset addSourceablesToZshrc;
 unset createFolders;
 unset createSymlinks;
 unset parseArguments;
