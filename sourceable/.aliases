@@ -6,6 +6,7 @@ alias cp="cp -r "
 alias rm="rm -rf "
 alias vis="/usr/local/bin/vis"
 alias dc="docker-compose "
+alias please="sudo "
 
 # Easier navigation: .., ..., ...., ....., ~ and -
 alias ..="cd .."
