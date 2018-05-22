@@ -2,6 +2,8 @@
 TERM="screen-256color"
 DEFAULT_USER="trezy"
 
+source ~/.bash_profile
+
 
 
 
@@ -75,6 +77,7 @@ antigen bundle git
 antigen bundle lukechilds/zsh-nvm
 antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle Valiev/almostontop
+antigen bundle zsh-users/zsh-syntax-highlighting
 
 # Load the theme.
 antigen theme bhilburn/powerlevel9k powerlevel9k
@@ -90,11 +93,5 @@ antigen apply
 
 
 
-source ~/.bash_profile
-source $ZSH/oh-my-zsh.sh
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source ~/.fonts/build/*.sh
-
-# added by travis gem
-[ -f /Users/trezy/.travis/travis.sh ] && source /Users/trezy/.travis/travis.sh
 
