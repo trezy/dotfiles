@@ -150,7 +150,7 @@ function runSetupScripts() {
         echo "$i $LAST_MODIFIED" >> $RECORD_PATH
       fi
 
-      # source $SOURCE_PATH
+      source $SOURCE_PATH
     fi
   done
 }
