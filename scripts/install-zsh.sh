@@ -15,6 +15,9 @@ if [ $? -ne 0 ]; then
     echo "No suitable installer found. Time to update the zsh installer!"
   fi
 
+  # Set the default shell to zsh
+  chsh -s $(which zsh)
+
   echo "Done."
 fi
 
