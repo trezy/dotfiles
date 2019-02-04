@@ -4,8 +4,8 @@ ls ~/.nvm &> /dev/null
 
 if [ $? -ne 0 ]; then
   echo -n "Installing yarn... "
- 
-  if [ $OSTYPE = "*darwin*" ]; then
+
+  if [[ $OSTYPE = *"darwin"* ]]; then
     brew install yarn --without-node
   else
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
