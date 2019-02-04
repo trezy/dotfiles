@@ -91,7 +91,11 @@ function createSymlinks() {
   for i in $(ls -A ./symlinkable); do
     SYMLINK_PATH=$(realpath "./symlinkable/$i")
 
-    if [[ ! -e ~/$i ]]; then
+    if [[ -e ~/$i ]] && [[ ! -L ~/$i ]]; then
+      rm ~/$i
+    fi
+
+    if [[ ! -L ~/$i ]]; then
       ln -s $SYMLINK_PATH ~
     fi
   done
@@ -125,7 +129,7 @@ function runSetupScripts() {
 
     if [[ $PREVIOUS_LAST_MODIFIED != $LAST_MODIFIED ]]; then
       if [[ $PREVIOUS_RECORD != "" ]]; then
-        sed -i "s/$PREVIOUS_RECORD/$i $LAST_MODIFIED/" $RECORD_PATH
+        sed -i ".bak" "s/$PREVIOUS_RECORD/$i $LAST_MODIFIED/" $RECORD_PATH
       else
         echo "$i $LAST_MODIFIED" >> $RECORD_PATH
       fi
