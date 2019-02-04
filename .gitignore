@@ -1,4 +1,5 @@
 .DS_Store
+*.icloud
 symlinkable/.irssi/away.log
 symlinkable/.irssi/config
 symlinkable/.irssi/config.autosave
