@@ -92,7 +92,7 @@ function createSymlinks() {
     SYMLINK_PATH=$(realpath "./symlinkable/$i")
 
     if [[ -e ~/$i ]] && [[ ! -L ~/$i ]]; then
-      rm ~/$i
+      rm -rf ~/$i
     fi
 
     if [[ ! -L ~/$i ]]; then
