@@ -5,11 +5,11 @@ which irssi &> /dev/null
 if [ $? -ne 0 ]; then
 	echo -n "Installing irssi... "
 
-	{{ if eq .chezmoi.os "linux" -}}
-		sudo apt install -y irssi &> /dev/null
-	{{ else if eq .chezmoi.os "darwin" -}}
+	if [[ $OSTYPE = *"darwin"* ]]; then
 		brew install irssi &> /dev/null
-	{{ end -}}
+	else
+		sudo apt install -y irssi &> /dev/null
+	fi
 
 	echo "Done."
 fi
