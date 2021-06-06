@@ -3,9 +3,11 @@
 which tmuxinator &> /dev/null
 
 if [ $? -ne 0 ]; then
-	echo -n "Installing Tmuxinator... "
+	{{ if eq .chezmoi.os "darwin" -}}
+		echo -n "Installing Tmuxinator... "
 
-	brew install tmuxinator &> /dev/null
+		brew install tmuxinator &> /dev/null
 
-	echo "Done."
+		echo "Done."
+	{{ end -}}
 fi

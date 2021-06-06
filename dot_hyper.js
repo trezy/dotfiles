@@ -137,6 +137,11 @@ module.exports = {
     // rendering (slower, but supports transparent backgrounds)
     webGLRenderer: true,
 
+    // Change the behaviour of modifier keys to act as meta key
+    modifierKeys: {
+      altIsMeta: true,
+    },
+
     // for advanced config flags please refer to https://hyper.is/#cfg
   },
 
