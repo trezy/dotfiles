@@ -5,11 +5,11 @@ zsh --version &> /dev/null
 if [ $? -ne 0 ]; then
 	echo -n "Installing zsh... "
 
-	{{ if eq .chezmoi.os "linux" -}}
-		sudo apt install -y zsh
-	{{ else if eq .chezmoi.os "darwin" -}}
+	if [[ $OSTYPE = *"darwin"* ]]; then
 		brew install zsh
-	{{ end -}}
+	else
+		sudo apt install -y zsh
+	fi
 
 	# Set the default shell to zsh
 	chsh -s $(which zsh)
